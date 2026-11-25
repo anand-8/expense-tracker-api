@@ -3,6 +3,7 @@ package com.anand.expensetrackerapi.service.impl;
 
 import com.anand.expensetrackerapi.entity.Transaction;
 import com.anand.expensetrackerapi.entity.User;
+import com.anand.expensetrackerapi.enums.TransactionType;
 import com.anand.expensetrackerapi.repository.TransactionRepository;
 import com.anand.expensetrackerapi.repository.UserRepository;
 import com.anand.expensetrackerapi.service.TransactionService;
@@ -10,7 +11,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.anand.expensetrackerapi.dto.FinancialSummaryResponse;
+import java.math.BigDecimal;
+import com.anand.expensetrackerapi.enums.TransactionType;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -126,4 +129,32 @@ public class TransactionServiceImpl implements TransactionService {
                     "Transaction date is required");
         }
     }
+
+
+    @Override
+    public FinancialSummaryResponse getFinancialSummary(Long userId) {
+
+        BigDecimal totalIncome =
+                transactionRepository.calculateTotalByUserAndType(
+                        userId, TransactionType.INCOME
+                );
+
+        BigDecimal totalExpenses =
+                transactionRepository.calculateTotalByUserAndType(
+                        userId, TransactionType.EXPENSE
+                );
+
+        BigDecimal balance = totalIncome.subtract(totalExpenses);
+
+        long totalTransactions =
+                transactionRepository.countByUserId(userId);
+
+        return new FinancialSummaryResponse(
+                totalIncome,
+                totalExpenses,
+                balance,
+                totalTransactions
+        );
+    }
+
 }

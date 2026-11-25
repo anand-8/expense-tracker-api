@@ -1,6 +1,7 @@
 
 package com.anand.expensetrackerapi.service;
 
+import com.anand.expensetrackerapi.dto.FinancialSummaryResponse;
 import com.anand.expensetrackerapi.entity.Transaction;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface TransactionService {
     );
 
     void deleteTransaction(Long transactionId, Long userId);
+
+    FinancialSummaryResponse getFinancialSummary(Long userId);
 }

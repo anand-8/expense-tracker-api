@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.anand.expensetrackerapi.dto.FinancialSummaryResponse;
 
 import java.util.List;
 
@@ -98,6 +99,16 @@ public class TransactionController {
         transactionService.deleteTransaction(id, userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    //Get Financial Summary
+    @GetMapping("/summary")
+    public ResponseEntity<FinancialSummaryResponse> getFinancialSummary(
+            @RequestParam Long userId
+    ){
+        FinancialSummaryResponse summary =
+                transactionService.getFinancialSummary(userId);
+        return ResponseEntity.ok(summary);
     }
 
     // Convert Entity into Response DTO
